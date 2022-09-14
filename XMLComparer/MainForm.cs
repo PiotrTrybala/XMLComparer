@@ -21,17 +21,14 @@ namespace XMLComparer
 
         class XMLComparer
         {
-            private string firstFileContent;
-            private string secondFileContent;
-
-            private string firstFilePath;
-            private string secondFilePath;
+            private FileVars firstFile;
+            private FileVars secondFile;
 
             public string FirstFilePath
             {
                 get
                 {
-                    return firstFilePath;
+                    return firstFile.pathName;
                 }
             }
 
@@ -39,7 +36,7 @@ namespace XMLComparer
             {
                 get
                 {
-                    return secondFilePath;
+                    return secondFile.pathName;
                 }
             }
 
@@ -47,7 +44,7 @@ namespace XMLComparer
             {
                 get 
                 { 
-                    return firstFileContent; 
+                    return firstFile.content; 
                 }
             }
 
@@ -55,18 +52,24 @@ namespace XMLComparer
             {
                 get
                 {
-                    return secondFileContent;
+                    return firstFile.content;
                 }
             }
             public XMLComparer()
             {
-                firstFileContent = string.Empty;
-                secondFileContent = string.Empty;
+                firstFile = new FileVars();
+                secondFile = new FileVars();
             }
 
-            private string ReadFile()
+            struct FileVars
             {
+                public string pathName;
+                public string content;
+            }
 
+            private FileVars ReadFile()
+            {
+                FileVars vars = new FileVars();
                 var FileContent = string.Empty;
 
                 OpenFileDialog dialog = new OpenFileDialog();
@@ -76,34 +79,32 @@ namespace XMLComparer
 
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
+                    vars.pathName = dialog.FileName;
+
                     var FileStream = dialog.OpenFile();
 
                     using (StreamReader reader = new StreamReader(FileStream))
                     {
                         FileContent = reader.ReadToEnd();
                     }
+
+                    vars.content = FileContent;
                 }
 
-                return FileContent;
+                return vars;
             }
 
             public bool ReadFirstFile()
             {
-                firstFileContent = ReadFile();
-                if (firstFileContent.Equals(string.Empty))
-                {
-                    return false;
-                }
+                firstFile = ReadFile();
+                // TODO: check if file is empty
                 return true;
             }
 
             public bool ReadSecondFile()
             {
-                secondFileContent = ReadFile();
-                if (secondFileContent.Equals(string.Empty))
-                {
-                    return false;
-                }
+                secondFile = ReadFile();
+                // TODO: check if file is empty
                 return true;
             }
 
@@ -116,7 +117,7 @@ namespace XMLComparer
 
             Debug.WriteLine(comparer.FirstFileContent);
 
-            
+            this.file1.Text = "Wczytano: " + comparer.FirstFilePath;
             
         }
 
@@ -125,6 +126,8 @@ namespace XMLComparer
             comparer.ReadSecondFile();
 
             Debug.WriteLine(comparer.SecondFileContent);
+
+            this.file2.Text = "Wczytano: " + comparer.SecondFilePath;
         }
 
         private void button3_Click(object sender, EventArgs e)
