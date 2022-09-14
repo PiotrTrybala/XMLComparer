@@ -92,19 +92,38 @@ namespace XMLComparer
                     vars.content = FileContent;
                 }
 
+                if (vars.content.Equals(string.Empty))
+                {
+                    throw new FileContentEmptyException("Content is empty");
+                }
+
                 return vars;
             }
 
             public bool ReadFirstFile()
             {
-                firstFile = ReadFile();
+                try
+                {
+                    firstFile = ReadFile();
+                } catch (FileContentEmptyException)
+                {
+                    Debug.WriteLine("First files content is empty");
+                }
+                
                 // TODO: check if file is empty
                 return true;
             }
 
             public bool ReadSecondFile()
             {
-                secondFile = ReadFile();
+                try
+                {
+                    secondFile = ReadFile();
+                } catch(FileContentEmptyException)
+                {
+                    Debug.WriteLine("Second files content is empty");
+                }
+                
                 // TODO: check if file is empty
                 return true;
             }
@@ -145,6 +164,10 @@ namespace XMLComparer
 
             }
 
+            private void ShowAnalysis()
+            {
+                
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)
