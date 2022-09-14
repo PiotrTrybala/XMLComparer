@@ -7,6 +7,7 @@ using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
+using System.Xml;
 
 namespace XMLComparer
 {
@@ -52,7 +53,7 @@ namespace XMLComparer
             {
                 get
                 {
-                    return firstFile.content;
+                    return secondFile.content;
                 }
             }
             public XMLComparer()
@@ -108,6 +109,42 @@ namespace XMLComparer
                 return true;
             }
 
+            public void Compare()
+            {
+
+                Debug.WriteLine(FirstFileContent);
+                Debug.WriteLine(SecondFileContent);
+
+                if (FirstFilePath == SecondFilePath)
+                {
+                    MessageBox.Show("Plik jest taki sam"); // TODO: add clearer info messages
+                    return;
+                }
+
+                if (FirstFileContent == SecondFileContent)
+                {
+                    MessageBox.Show("Plik jest taki sam"); // TODO: add clearer info messages
+                    return;
+                }
+
+
+                MessageBox.Show("Pliki są różne");
+                this.ShowAnalysis();
+/*                XmlDocument FirstDoc = new XmlDocument();
+                XmlDocument SecondDoc = new XmlDocument();
+
+                FirstDoc.LoadXml(FirstFileContent);
+                SecondDoc.LoadXml(SecondFileContent);
+
+                Debug.WriteLine(FirstDoc.InnerXml);
+                Debug.WriteLine(SecondDoc.InnerXml);*/
+                // TODO: later add complex analysis for what is different and what is not (maybe)
+
+
+
+
+            }
+
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -132,7 +169,11 @@ namespace XMLComparer
 
         private void button3_Click(object sender, EventArgs e)
         {
-            
+
+            Debug.WriteLine(comparer.SecondFileContent);
+            Debug.WriteLine(comparer.FirstFileContent);
+
+            comparer.Compare();
         }
     }
 }

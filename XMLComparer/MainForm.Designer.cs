@@ -31,6 +31,9 @@ namespace XMLComparer
         {
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
+            this.file1 = new System.Windows.Forms.Label();
+            this.file2 = new System.Windows.Forms.Label();
+            this.button3 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // button1
@@ -53,16 +56,46 @@ namespace XMLComparer
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
+            // file1
+            // 
+            this.file1.AutoSize = true;
+            this.file1.Location = new System.Drawing.Point(177, 45);
+            this.file1.Name = "file1";
+            this.file1.Size = new System.Drawing.Size(0, 15);
+            this.file1.TabIndex = 2;
+            // 
+            // file2
+            // 
+            this.file2.AutoSize = true;
+            this.file2.Location = new System.Drawing.Point(177, 94);
+            this.file2.Name = "file2";
+            this.file2.Size = new System.Drawing.Size(0, 15);
+            this.file2.TabIndex = 3;
+            // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(30, 138);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(137, 60);
+            this.button3.TabIndex = 4;
+            this.button3.Text = "Porównaj";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.button3);
+            this.Controls.Add(this.file2);
+            this.Controls.Add(this.file1);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Name = "MainForm";
             this.Text = "MainForm";
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -70,5 +103,8 @@ namespace XMLComparer
 
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Label file1;
+        private System.Windows.Forms.Label file2;
+        private System.Windows.Forms.Button button3;
     }
 }
