@@ -18,6 +18,7 @@ namespace XMLComparer
         {
             InitializeComponent();
             comparer = new XMLComparer();
+           
         }
 
         class XMLComparer
@@ -163,10 +164,36 @@ namespace XMLComparer
 
 
             }
+            private Dictionary<string, int> PrintInfo(string content)
+            {
+                XmlDocument doc = new XmlDocument();
+                doc.LoadXml(content);
 
+                var descendants = doc.SelectNodes("//*");
+
+                Dictionary<string, int> elements = new Dictionary<string, int>();
+
+                foreach (XmlElement el in descendants)
+                {
+                    if (!elements.ContainsKey(el.Name)) { elements.Add(el.Name, 1); }
+                    else
+                        elements[el.Name]++;
+
+                }
+
+                foreach (KeyValuePair<string, int> kv in elements)
+                {
+                    Debug.WriteLine(kv.Key + " " + kv.Value);
+                }
+
+                return elements;
+            }
             private void ShowAnalysis()
             {
-                
+                Dictionary<string, int> firstElements = PrintInfo(FirstFileContent);
+                Dictionary<string, int> secondElements = PrintInfo(SecondFileContent);
+
+
             }
         }
 
