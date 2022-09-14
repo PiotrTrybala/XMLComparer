@@ -24,7 +24,40 @@ namespace XMLComparer
             private string firstFileContent;
             private string secondFileContent;
 
-            public string FirstFileContent { get; set }
+            private string firstFilePath;
+            private string secondFilePath;
+
+            public string FirstFilePath
+            {
+                get
+                {
+                    return firstFilePath;
+                }
+            }
+
+            public string SecondFilePath
+            {
+                get
+                {
+                    return secondFilePath;
+                }
+            }
+
+            public string FirstFileContent 
+            {
+                get 
+                { 
+                    return firstFileContent; 
+                }
+            }
+
+            public string SecondFileContent
+            {
+                get
+                {
+                    return secondFileContent;
+                }
+            }
             public XMLComparer()
             {
                 firstFileContent = string.Empty;
@@ -81,13 +114,22 @@ namespace XMLComparer
 
             comparer.ReadFirstFile();
 
+            Debug.WriteLine(comparer.FirstFileContent);
 
+            
             
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
             comparer.ReadSecondFile();
+
+            Debug.WriteLine(comparer.SecondFileContent);
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            
         }
     }
 }
