@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Xml;
 
 namespace XMLComparer
 {
@@ -10,74 +11,93 @@ namespace XMLComparer
     {
         public XMLDiffer() { }
 
-        public List<DifferenceInfo> Differ(string s1, string s2)
+        public List<NodeInfo> Differ(string s1, string s2)
         {
-            List<DifferenceInfo> differences = new List<DifferenceInfo>();
+            XmlDocument firstDocument = new XmlDocument();
+            XmlDocument secondDocument = new XmlDocument();
 
-            string[] linesOfFirst = s1.Split("\r\n").Select(s => s.Trim()).ToArray();
-            string[] linesOfSecond = s2.Split("\r\n").Select(s => s.Trim()).ToArray();
+            firstDocument.LoadXml(s1);
+            secondDocument.LoadXml(s2);
 
-            
+            List<NodeInfo> firstNodesInfo = new List<NodeInfo>();
+            List<NodeInfo> secondNodesInfo = new List<NodeInfo>();
 
-            int lengthOfFirst = linesOfFirst.Length;
-            int lengthOfSecond = linesOfSecond.Length;
+            // 1. count the nodes
+            // 2. check rarity of nodes
 
-            for (int i = 0; i < Math.Max(lengthOfFirst, lengthOfSecond); i++)
+
+
+            PrintNodes(firstDocument.ChildNodes, firstNodesInfo);
+            index = 0;
+            PrintNodes(secondDocument.ChildNodes, secondNodesInfo);
+
+            foreach (NodeInfo info in firstNodesInfo)
             {
-                string a1 = string.Empty, a2 = string.Empty;
-                if (i < lengthOfFirst) a1 = linesOfFirst[i];
-                if (i < lengthOfSecond) a2 = linesOfSecond[i];
-
-                Debug.WriteLine("{0} {1}", a1, a2);
-
+                Debug.WriteLine("{0} <- {1}", info.level, info.nodeName);
             }
-            if (lengthOfFirst != lengthOfSecond)
+            Debug.WriteLine("=======================");
+            foreach (NodeInfo info in secondNodesInfo)
             {
-                Debug.WriteLine("Difference lengths");
-                int startIndex = Math.Min(lengthOfFirst, lengthOfSecond);
-                int endIndex = Math.Max(lengthOfFirst, lengthOfSecond);
+                Debug.WriteLine("{0} <- {1}", info.level, info.nodeName);
+            }
 
-                // TODO: find more "elegent" way to do that, but if works and it is ugly then it is good :)
-                string[] array;
-                if (lengthOfFirst < lengthOfSecond) array = linesOfSecond;
-                else array = linesOfFirst;
+            Dictionary<string, int> firstNodeCount = CountNodes(firstDocument);
+            Dictionary<string, int> secondNodeCount = CountNodes(secondDocument);
+
+            HashSet<string> uniqueNodes = new HashSet<string>();
+
+            foreach (KeyValuePair<string, int> info in firstNodeCount)
+            {
+                Debug.WriteLine("{0} <- {1}", info.Key, info.Value);
+            }
+            Debug.WriteLine("=======================");
+            foreach (KeyValuePair<string, int> info in secondNodeCount)
+            {
+                Debug.WriteLine("{0} <- {1}", info.Key, info.Value);
+            }
 
 
-                for (int i = startIndex; i < endIndex; i++)
+            return null;
+
+        }
+
+        private Dictionary<string, int> CountNodes(XmlDocument firstDocument)
+        {
+            Dictionary<string, int> dict = new Dictionary<string, int>();
+
+            XmlNodeList elements = firstDocument.SelectNodes("//*");
+
+            foreach (XmlNode node in elements)
+            {
+
+                if (!dict.ContainsKey(node.Name))
                 {
-                    // TODO: maybe create MakeDifferenceInfo function
-                    DifferenceInfo info = new DifferenceInfo();
-                    info.lineNumber = i;
-                    info.type = DifferenceType.NEW_LINE;
-                    info.lineContent1 = "BLANK";
-                    info.lineContent2 = array[i];
-
-                    differences.Add(info);
+                    dict.Add(node.Name, 1);
+                    continue;
                 }
+                dict[node.Name]++;
+
             }
 
-            // if l1 = l2
+            return dict;
+        }
 
-            for (int i = 0; i < lengthOfFirst; i++)
+        private int index = 0;
+        private void PrintNodes(XmlNodeList nodes, List<NodeInfo> infos)
+        {
+            index++;
+            if (nodes.Count == 0) return;
+
+            foreach (XmlNode node in nodes)
             {
-
-                if (!linesOfFirst[i].Equals(linesOfSecond[i]))
-                {
-                    DifferenceInfo info = new DifferenceInfo();
-
-                    info.lineNumber = i;
-                    info.type = DifferenceType.DIFFERENT_LINE;
-                    info.lineContent1 = linesOfFirst[i];
-                    info.lineContent2 = linesOfSecond[i];
-
-                    differences.Add(info);
-                }
-
+                NodeInfo info = new NodeInfo();
+                info.level = index;
+                info.nodeName = node.Name;
+                
+                infos.Add(info);
+                PrintNodes(node.ChildNodes, infos);
+                index--;
             }
-            
-
-
-            return differences;
         }
     }
 }
