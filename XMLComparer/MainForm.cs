@@ -18,7 +18,7 @@ namespace XMLComparer
         {
             InitializeComponent();
             comparer = new XMLComparer();
-           
+
         }
 
         class XMLComparer
@@ -42,11 +42,11 @@ namespace XMLComparer
                 }
             }
 
-            public string FirstFileContent 
+            public string FirstFileContent
             {
-                get 
-                { 
-                    return firstFile.content; 
+                get
+                {
+                    return firstFile.content;
                 }
             }
 
@@ -93,38 +93,21 @@ namespace XMLComparer
                     vars.content = FileContent;
                 }
 
-                if (vars.content.Equals(string.Empty))
-                {
-                    throw new FileContentEmptyException("Content is empty");
-                }
-
                 return vars;
             }
 
             public bool ReadFirstFile()
             {
-                try
-                {
-                    firstFile = ReadFile();
-                } catch (FileContentEmptyException)
-                {
-                    Debug.WriteLine("First files content is empty");
-                }
-                
+                firstFile = ReadFile();
+
                 // TODO: check if file is empty
                 return true;
             }
 
             public bool ReadSecondFile()
             {
-                try
-                {
-                    secondFile = ReadFile();
-                } catch(FileContentEmptyException)
-                {
-                    Debug.WriteLine("Second files content is empty");
-                }
-                
+                secondFile = ReadFile();
+
                 // TODO: check if file is empty
                 return true;
             }
@@ -149,49 +132,20 @@ namespace XMLComparer
 
 
                 MessageBox.Show("Pliki są różne");
-                this.ShowAnalysis();
-/*                XmlDocument FirstDoc = new XmlDocument();
-                XmlDocument SecondDoc = new XmlDocument();
 
-                FirstDoc.LoadXml(FirstFileContent);
-                SecondDoc.LoadXml(SecondFileContent);
+                /*                XmlDocument FirstDoc = new XmlDocument();
+                                XmlDocument SecondDoc = new XmlDocument();
 
-                Debug.WriteLine(FirstDoc.InnerXml);
-                Debug.WriteLine(SecondDoc.InnerXml);*/
+                                FirstDoc.LoadXml(FirstFileContent);
+                                SecondDoc.LoadXml(SecondFileContent);
+
+                                Debug.WriteLine(FirstDoc.InnerXml);
+                                Debug.WriteLine(SecondDoc.InnerXml);*/
                 // TODO: later add complex analysis for what is different and what is not (maybe)
 
+                FileDiffer differ = new FileDiffer(FileTypes.XML, FirstFileContent, SecondFileContent);
 
-
-
-            }
-            private Dictionary<string, int> PrintInfo(string content)
-            {
-                XmlDocument doc = new XmlDocument();
-                doc.LoadXml(content);
-
-                var descendants = doc.SelectNodes("//*");
-
-                Dictionary<string, int> elements = new Dictionary<string, int>();
-
-                foreach (XmlElement el in descendants)
-                {
-                    if (!elements.ContainsKey(el.Name)) { elements.Add(el.Name, 1); }
-                    else
-                        elements[el.Name]++;
-
-                }
-
-                foreach (KeyValuePair<string, int> kv in elements)
-                {
-                    Debug.WriteLine(kv.Key + " " + kv.Value);
-                }
-
-                return elements;
-            }
-            private void ShowAnalysis()
-            {
-                Dictionary<string, int> firstElements = PrintInfo(FirstFileContent);
-                Dictionary<string, int> secondElements = PrintInfo(SecondFileContent);
+                
 
 
             }
@@ -205,7 +159,7 @@ namespace XMLComparer
             Debug.WriteLine(comparer.FirstFileContent);
 
             this.file1.Text = "Wczytano: " + comparer.FirstFilePath;
-            
+
         }
 
         private void button2_Click(object sender, EventArgs e)

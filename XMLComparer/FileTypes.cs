@@ -8,6 +8,6 @@ namespace XMLComparer
     {
         PROTO,
         XML,
-        NONE
+        NONE = 2
     }
 }
