@@ -41,6 +41,7 @@ namespace XMLComparer
                 Debug.WriteLine("{0} <- {1}", info.level, info.nodeName);
             }
 
+            // 2. counting nodes
             Dictionary<string, int> firstNodeCount = CountNodes(firstDocument);
             Dictionary<string, int> secondNodeCount = CountNodes(secondDocument);
 
@@ -56,9 +57,48 @@ namespace XMLComparer
                 Debug.WriteLine("{0} <- {1}", info.Key, info.Value);
             }
 
+            // 3. type checking nodes
+
+
+
+            List<NodeType> firstCheckedTypes = DoTypeChecking(firstDocument);
+            List<NodeType> secondCheckedTypes = DoTypeChecking(secondDocument);
+            
 
             return null;
 
+        }
+
+        private List<NodeType> DoTypeChecking(XmlDocument firstDocument)
+        {
+            XmlNodeList nodetoTypeCheck = firstDocument.SelectNodes("//*");
+
+            List<NodeType> nodeTypes = new List<NodeType>();
+
+            foreach (XmlNode node in nodetoTypeCheck)
+            {
+                string nodeContent = node.InnerText;
+                NodeType nodeType = new NodeType();
+                double dOut;
+                bool bOut;
+
+                if (Double.TryParse(nodeContent, out dOut))
+                {
+                    nodeType.type = XMLNodeType.NUMBER;
+                }
+                else if (Boolean.TryParse(nodeContent, out bOut))
+                {
+                    nodeType.type = XMLNodeType.BOOL;
+                }
+                else
+                {
+                    nodeType.type = XMLNodeType.STRING;
+                }
+                nodeType.name = node.Name;
+                nodeTypes.Add(nodeType);
+            }
+
+            return nodeTypes;
         }
 
         private Dictionary<string, int> CountNodes(XmlDocument firstDocument)
