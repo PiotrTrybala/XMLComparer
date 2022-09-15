@@ -6,6 +6,6 @@ namespace XMLComparer
 {
     public interface IDiffer { 
         
-        void Differ(string s1, string s2);
+        List<DifferenceInfo> Differ(string s1, string s2);
     }
 }

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace XMLComparer
 {
-    enum FileType
+    enum FileTypes
     {
         PROTO,
         XML,

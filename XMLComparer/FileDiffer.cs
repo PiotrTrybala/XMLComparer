@@ -7,22 +7,23 @@ namespace XMLComparer
     class FileDiffer
     {
 
-        private FileType type;
+        private FileTypes type;
         private IDiffer differ;
-        public FileDiffer(FileType type)
+
+        public FileDiffer(FileTypes type, string s1, string s2)
         {
             this.type = type;
 
             switch(this.type)
             {
-                case FileType.XML:
-                    differ = new XMLDiffer();
+                case FileTypes.XML:
+                    differ = new XMLDiffer(s1, s2);
                     break;
-                case FileType.PROTO:
-                    differ = new ProtoDiffer();
+                case FileTypes.PROTO:
+                    differ = new ProtoDiffer(s1, s2);
                     break;
-                case FileType.PROTO:
-                    throw new UnknownTypeException();
+                case FileTypes.PROTO:
+                    throw new InvalidOperationException();
             }
         }
     }
