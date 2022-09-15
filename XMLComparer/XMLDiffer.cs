@@ -11,7 +11,7 @@ namespace XMLComparer
     {
         public XMLDiffer() { }
 
-        public List<NodeInfo> Differ(string s1, string s2)
+        public List<NodeDifferenceInfo> Differ(string s1, string s2)
         {
             XmlDocument firstDocument = new XmlDocument();
             XmlDocument secondDocument = new XmlDocument();
@@ -23,49 +23,88 @@ namespace XMLComparer
             List<NodeInfo> secondNodesInfo = new List<NodeInfo>();
 
             // 1. count the nodes
-            // 2. check rarity of nodes
 
-
-
-            PrintNodes(firstDocument.ChildNodes, firstNodesInfo);
-            index = 0;
-            PrintNodes(secondDocument.ChildNodes, secondNodesInfo);
-
-            foreach (NodeInfo info in firstNodesInfo)
-            {
-                Debug.WriteLine("{0} <- {1}", info.level, info.nodeName);
-            }
-            Debug.WriteLine("=======================");
-            foreach (NodeInfo info in secondNodesInfo)
-            {
-                Debug.WriteLine("{0} <- {1}", info.level, info.nodeName);
-            }
+            PrintNodes(0, firstDocument.ChildNodes, firstNodesInfo);
+            PrintNodes(0, secondDocument.ChildNodes, secondNodesInfo);
 
             // 2. counting nodes
             Dictionary<string, int> firstNodeCount = CountNodes(firstDocument);
             Dictionary<string, int> secondNodeCount = CountNodes(secondDocument);
 
-            HashSet<string> uniqueNodes = new HashSet<string>();
-
-            foreach (KeyValuePair<string, int> info in firstNodeCount)
-            {
-                Debug.WriteLine("{0} <- {1}", info.Key, info.Value);
-            }
-            Debug.WriteLine("=======================");
-            foreach (KeyValuePair<string, int> info in secondNodeCount)
-            {
-                Debug.WriteLine("{0} <- {1}", info.Key, info.Value);
-            }
+            
 
             // 3. type checking nodes
 
-
-
             List<NodeType> firstCheckedTypes = DoTypeChecking(firstDocument);
             List<NodeType> secondCheckedTypes = DoTypeChecking(secondDocument);
-            
 
-            return null;
+            List<NodeDifferenceInfo> infos = new List<NodeDifferenceInfo>();
+
+            HashSet<string> uniqueNodes = new HashSet<string>();
+            // 1. check DIFFERENT_NODE
+
+            HashSet<string> firstKeys = new HashSet<string>(firstNodeCount.Keys.ToHashSet());
+            HashSet<string> secondKeys = new HashSet<string>(secondNodeCount.Keys.ToHashSet());
+
+            HashSet<string> firstHalf = new HashSet<string>(firstKeys);
+            firstHalf.ExceptWith(secondKeys);
+
+            HashSet<string> secondHalf = new HashSet<string>(secondKeys);
+            secondHalf.ExceptWith(firstKeys);
+
+            HashSet<string> result = new HashSet<string>(firstHalf);
+            result.UnionWith(secondHalf);
+
+            // 1. check DIFFERENT_NODE
+
+            foreach (string key in result)
+            {
+                NodeDifferenceInfo info = new NodeDifferenceInfo();
+                info.differenceType = NodeDifferenceType.DIFFERENT_NODE;
+                info.firstNodeName = key;
+                info.secondNodeName = "BLANK";
+                infos.Add(info);
+            }
+
+            HashSet<string> allKeys = new HashSet<string>(firstKeys);
+            allKeys.UnionWith(secondKeys);
+
+            // 2. check DIFFERENT_COUNT 
+
+            foreach (string key in allKeys)
+            {
+                // TODO: fix implementation
+                try
+                {
+                    if (!firstNodeCount[key].Equals(secondNodeCount[key]))
+                    {
+                        NodeDifferenceInfo info = new NodeDifferenceInfo();
+                        info.differenceType = NodeDifferenceType.DIFFERENT_COUNT;
+                        info.firstNodeName = key;
+                        info.secondNodeName = key;
+                        infos.Add(info);
+                    }
+                } catch (KeyNotFoundException) { }
+
+            }
+
+            // 3. check DIFFERENT_VALUE
+
+            Debug.WriteLine("{0} {1}", firstCheckedTypes.ToArray().Length, secondCheckedTypes.ToArray().Length);
+
+            for (int i = 0; i < firstCheckedTypes.ToArray().Length; i++)
+            {
+                if (!firstCheckedTypes[i].type.Equals(secondCheckedTypes[i].type))
+                {
+                    NodeDifferenceInfo info = new NodeDifferenceInfo();
+                    info.differenceType = NodeDifferenceType.DIFFERENT_VALUE;
+                    info.firstNodeName = firstCheckedTypes[i].name;
+                    info.secondNodeName = secondCheckedTypes[i].name;
+                    infos.Add(info);
+                }
+            }
+
+            return infos;
 
         }
 
@@ -121,9 +160,7 @@ namespace XMLComparer
 
             return dict;
         }
-
-        private int index = 0;
-        private void PrintNodes(XmlNodeList nodes, List<NodeInfo> infos)
+        private void PrintNodes(int index, XmlNodeList nodes, List<NodeInfo> infos)
         {
             index++;
             if (nodes.Count == 0) return;
@@ -135,7 +172,7 @@ namespace XMLComparer
                 info.nodeName = node.Name;
                 
                 infos.Add(info);
-                PrintNodes(node.ChildNodes, infos);
+                PrintNodes(index, node.ChildNodes, infos);
                 index--;
             }
         }

@@ -27,8 +27,15 @@ namespace XMLComparer
                     throw new InvalidOperationException();
             }
             // TODO: maybe move the difference analysis to separate function
-            differ.Differ(s1, s2);
+            List<NodeDifferenceInfo> differences = differ.Differ(s1, s2);
 
+            foreach (NodeDifferenceInfo info in differences)
+            {
+                Debug.WriteLine("{0} -> {1} {2}"
+                    ,info.differenceType.ToString()
+                    ,info.firstNodeName
+                    , info.secondNodeName);
+            }
 
         }
     }

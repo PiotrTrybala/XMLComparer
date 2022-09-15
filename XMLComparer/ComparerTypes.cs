@@ -18,15 +18,30 @@ namespace XMLComparer
         public string filePath;
         public string content;
     };
+
+    public enum XMLNodeType
+    {
+        NUMBER,
+        STRING,
+        BOOL
+    };
+
+    public struct NodeType
+    {
+        public XMLNodeType type;
+        public string name;
+    }
+
     public enum NodeDifferenceType
     {
         DIFFERENT_NODE, // if node is not present in another file
-        DIFFERENT_COUNT // if node is present in another file but count is different
+        DIFFERENT_COUNT, // if node is present in another file but count is different
+        DIFFERENT_VALUE // if node is present in another file and count is same but value is different
     }
     public struct NodeDifferenceInfo
     {
-        NodeDifferenceType differenceType;
-        string firstNodeName;
-        string secondNodeName;
+        public NodeDifferenceType differenceType;
+        public string firstNodeName;
+        public string secondNodeName;
     }
 }
