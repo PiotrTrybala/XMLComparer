@@ -23,14 +23,14 @@ namespace XMLComparer
 
         class XMLComparer
         {
-            private FileVars firstFile;
-            private FileVars secondFile;
+            private FileInfo firstFile;
+            private FileInfo secondFile;
 
             public string FirstFilePath
             {
                 get
                 {
-                    return firstFile.pathName;
+                    return firstFile.filePath;
                 }
             }
 
@@ -38,7 +38,7 @@ namespace XMLComparer
             {
                 get
                 {
-                    return secondFile.pathName;
+                    return secondFile.filePath;
                 }
             }
 
@@ -59,19 +59,13 @@ namespace XMLComparer
             }
             public XMLComparer()
             {
-                firstFile = new FileVars();
-                secondFile = new FileVars();
+                firstFile = new FileInfo();
+                secondFile = new FileInfo();
             }
 
-            struct FileVars
+            private FileInfo ReadFile()
             {
-                public string pathName;
-                public string content;
-            }
-
-            private FileVars ReadFile()
-            {
-                FileVars vars = new FileVars();
+                FileInfo vars = new FileInfo();
                 var FileContent = string.Empty;
 
                 OpenFileDialog dialog = new OpenFileDialog();
@@ -81,7 +75,7 @@ namespace XMLComparer
 
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
-                    vars.pathName = dialog.FileName;
+                    vars.filePath = dialog.FileName;
 
                     var FileStream = dialog.OpenFile();
 
@@ -114,9 +108,6 @@ namespace XMLComparer
 
             public void Compare()
             {
-
-                Debug.WriteLine(FirstFileContent);
-                Debug.WriteLine(SecondFileContent);
 
                 if (FirstFilePath == SecondFilePath)
                 {
@@ -156,8 +147,6 @@ namespace XMLComparer
 
             comparer.ReadFirstFile();
 
-            Debug.WriteLine(comparer.FirstFileContent);
-
             this.file1.Text = "Wczytano: " + comparer.FirstFilePath;
 
         }
@@ -165,8 +154,6 @@ namespace XMLComparer
         private void button2_Click(object sender, EventArgs e)
         {
             comparer.ReadSecondFile();
-
-            Debug.WriteLine(comparer.SecondFileContent);
 
             this.file2.Text = "Wczytano: " + comparer.SecondFilePath;
         }
