@@ -62,7 +62,7 @@ namespace XMLComparer
                 NodeDifferenceInfo info = new NodeDifferenceInfo();
                 info.differenceType = NodeDifferenceType.DIFFERENT_NODE;
                 info.nodeName = key;
-                info.nodeValue = "BLANK"; // TODO: get value inside node
+                info.nodeValue = "VALUE"; // TODO: get value inside node
                 infos.Add(info);
             }
 
