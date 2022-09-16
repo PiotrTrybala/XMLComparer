@@ -21,52 +21,31 @@ namespace XMLComparer
 
         }
 
+        // TODO: find better way to do that
+        public enum File
+        {
+            FIRST,
+            SECOND
+        }
+
         class XMLComparer
         {
             private FileInfo firstFile;
             private FileInfo secondFile;
 
-            public string FirstFilePath
-            {
-                get
-                {
-                    return firstFile.filePath;
-                }
-            }
+            public FileInfo FirstFile { get { return firstFile; } }
+            public FileInfo SecondFile { get { return secondFile; } }
 
-            public string SecondFilePath
-            {
-                get
-                {
-                    return secondFile.filePath;
-                }
-            }
-
-            public string FirstFileContent
-            {
-                get
-                {
-                    return firstFile.content;
-                }
-            }
-
-            public string SecondFileContent
-            {
-                get
-                {
-                    return secondFile.content;
-                }
-            }
             public XMLComparer()
             {
                 firstFile = new FileInfo();
                 secondFile = new FileInfo();
             }
 
-            private FileInfo ReadFile()
+            public bool ReadFile(File file)
             {
-                FileInfo vars = new FileInfo();
-                var FileContent = string.Empty;
+                FileInfo info = new FileInfo();
+                var fileContent = string.Empty;
 
                 OpenFileDialog dialog = new OpenFileDialog();
 
@@ -75,66 +54,35 @@ namespace XMLComparer
 
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
-                    vars.filePath = dialog.FileName;
+                    info.filePath = dialog.FileName;
 
                     var FileStream = dialog.OpenFile();
 
                     using (StreamReader reader = new StreamReader(FileStream))
                     {
-                        FileContent = reader.ReadToEnd();
+                        fileContent = reader.ReadToEnd();
                     }
 
-                    vars.content = FileContent;
+                    info.content = fileContent;
                 }
 
-                return vars;
-            }
+                if (file == File.FIRST)
+                {
+                    firstFile = info;
+                } else
+                {
+                    secondFile = info;
+                }
 
-            public bool ReadFirstFile()
-            {
-                firstFile = ReadFile();
-
-                // TODO: check if file is empty
-                return true;
-            }
-
-            public bool ReadSecondFile()
-            {
-                secondFile = ReadFile();
-
-                // TODO: check if file is empty
                 return true;
             }
 
             public void Compare()
             {
 
-                if (FirstFilePath == SecondFilePath)
-                {
-                    MessageBox.Show("Plik jest taki sam"); // TODO: add clearer info messages
-                    return;
-                }
+                
 
-                if (FirstFileContent == SecondFileContent)
-                {
-                    MessageBox.Show("Plik jest taki sam"); // TODO: add clearer info messages
-                    return;
-                }
-
-
-                MessageBox.Show("Pliki są różne");
-
-                /*                XmlDocument FirstDoc = new XmlDocument();
-                                XmlDocument SecondDoc = new XmlDocument();
-
-                                FirstDoc.LoadXml(FirstFileContent);
-                                SecondDoc.LoadXml(SecondFileContent);
-
-                                Debug.WriteLine(FirstDoc.InnerXml);
-                                Debug.WriteLine(SecondDoc.InnerXml);*/
-                // TODO: later add complex analysis for what is different and what is not (maybe)
-
-                FileDiffer differ = new FileDiffer(FileTypes.XML, FirstFileContent, SecondFileContent);
+                FileDiffer differ = new FileDiffer(FileTypes.XML, firstFile.content, secondFile.content);
 
                 
 
@@ -145,24 +93,21 @@ namespace XMLComparer
         private void button1_Click(object sender, EventArgs e)
         {
 
-            comparer.ReadFirstFile();
+            comparer.ReadFile(File.FIRST);
 
-            this.file1.Text = "Wczytano: " + comparer.FirstFilePath;
+            this.file1.Text = "Wczytano: " + this.comparer.FirstFile.filePath ;
 
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            comparer.ReadSecondFile();
+            comparer.ReadFile(File.SECOND);
 
-            this.file2.Text = "Wczytano: " + comparer.SecondFilePath;
+            this.file2.Text = "Wczytano: " + comparer.SecondFile.filePath;
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
-
-            Debug.WriteLine(comparer.SecondFileContent);
-            Debug.WriteLine(comparer.FirstFileContent);
 
             comparer.Compare();
         }
