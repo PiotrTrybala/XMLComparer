@@ -49,6 +49,7 @@ namespace XMLComparer
     }
 
     // NodeDifferenceInfo: struct for storing info about difference between two nodes
+    // TODO: fix what to display
     public struct NodeDifferenceInfo
     {
         public NodeDifferenceType differenceType;

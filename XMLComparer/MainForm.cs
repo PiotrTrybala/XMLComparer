@@ -14,6 +14,7 @@ namespace XMLComparer
     public partial class MainForm : Form
     {
         private readonly XMLComparer comparer;
+        public static List<NodeDifferenceInfo> globalDifferences;
         public MainForm()
         {
             InitializeComponent();
@@ -87,6 +88,8 @@ namespace XMLComparer
                 List<NodeDifferenceInfo> fileDifferences = differ.Differences;
 
                 // TODO: graphical representation
+
+                globalDifferences = new List<NodeDifferenceInfo>(fileDifferences);
                 
 
                 
@@ -113,8 +116,10 @@ namespace XMLComparer
 
         private void button3_Click(object sender, EventArgs e)
         {
-
             comparer.Compare();
+
+            DifferenceWindow window = new DifferenceWindow();
+            window.Show();
         }
     }
 }
