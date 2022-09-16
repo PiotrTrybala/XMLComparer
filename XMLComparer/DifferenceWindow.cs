@@ -21,26 +21,32 @@ namespace XMLComparer
                 switch(info.differenceType)
                 {
                     case NodeDifferenceType.DIFFERENT_NODE:
-                        string [] row1 = new string[] { "BLANK",
+                        string [] row1 = new string[] {
                             NodeDifferenceType.DIFFERENT_NODE.ToString(),
                             info.nodeName,
-                            info.nodeValue
+                            info.nodeValue,
+                            "-",
+                            "-"
                         };
                         dataGridView1.Rows.Add(row1);
                         break;
                     case NodeDifferenceType.DIFFERENT_COUNT:
-                        string[] row2 = new string[] { "BLANK",
+                        string[] row2 = new string[] {
                             NodeDifferenceType.DIFFERENT_COUNT.ToString(),
-                            info.firstName,
-                            info.secondName
+                            info.nodeNameCount,
+                            info.firstCount.ToString(),
+                            info.secondCount.ToString(),
+                            "-"
                         };
                         dataGridView1.Rows.Add(row2);
 
                         break;
                     case NodeDifferenceType.DIFFERENT_VALUE:
-                        string[] row3 = new string[] { "BLANK",
+                        string[] row3 = new string[] {
                             NodeDifferenceType.DIFFERENT_VALUE.ToString(),
+                            info.firstValue.value,
                             info.firstValue.type.ToString(),
+                            info.secondValue.value,
                             info.secondValue.type.ToString()
                         };
                         dataGridView1.Rows.Add(row3);
@@ -61,6 +67,11 @@ namespace XMLComparer
         {
             InitializeComponent();
             PopulateDataGridView();
+        }
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
     }
 }

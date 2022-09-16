@@ -36,7 +36,7 @@ namespace XMLComparer
             foreach (NodeDifferenceInfo info in differences)
             {
 
-                switch (info.differenceType)
+                /*switch (info.differenceType)
                 {
                     case NodeDifferenceType.DIFFERENT_NODE:
                         Debug.Print("{0} -> {1} {2}",
@@ -61,7 +61,7 @@ namespace XMLComparer
                         break;
                     default:
                         break;
-                }
+                }*/
             }
         }
     }

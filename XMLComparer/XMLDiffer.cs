@@ -80,8 +80,9 @@ namespace XMLComparer
                     {
                         NodeDifferenceInfo info = new NodeDifferenceInfo();
                         info.differenceType = NodeDifferenceType.DIFFERENT_COUNT;
-                        info.firstName = key;
-                        info.secondName = key;
+                        info.nodeNameCount = key;
+                        info.firstCount = firstNodeCount[key];
+                        info.secondCount = secondNodeCount[key];
                         infos.Add(info);
                     }
                 } catch (KeyNotFoundException) { }

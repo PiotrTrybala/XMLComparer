@@ -57,8 +57,9 @@ namespace XMLComparer
         public string nodeName;
         public string nodeValue;
         // firstName and secondName are set when DIFFERENT_COUNT
-        public string firstName;
-        public string secondName;
+        public string nodeNameCount;
+        public int firstCount;
+        public int secondCount;
         // firstValue and secondValue are set when DIFFERENT_VALUE
         public XMLValue firstValue;
         public XMLValue secondValue;
