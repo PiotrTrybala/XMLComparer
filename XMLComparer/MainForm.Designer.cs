@@ -92,8 +92,9 @@ namespace XMLComparer
             this.Controls.Add(this.file1);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "MainForm";
-            this.Text = "MainForm";
+            this.Text = "Difference";
             this.ResumeLayout(false);
             this.PerformLayout();
 
