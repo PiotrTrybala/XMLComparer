@@ -10,6 +10,10 @@ namespace XMLComparer
 
         private FileTypes type;
         private IDiffer differ;
+        private List<NodeDifferenceInfo> differences;
+
+        public List<NodeDifferenceInfo> Differences { get { return differences; } }
+
         // TODO: do check if two files are different format, then NOTSAMEFORMATEXCEPTION is run
         public FileDiffer(FileTypes type, string s1, string s2)
         {
@@ -27,7 +31,7 @@ namespace XMLComparer
                     throw new InvalidOperationException();
             }
             // TODO: maybe move the difference analysis to separate function
-            List<NodeDifferenceInfo> differences = differ.Differ(s1, s2);
+            this.differences = differ.Differ(s1, s2);
 
             foreach (NodeDifferenceInfo info in differences)
             {

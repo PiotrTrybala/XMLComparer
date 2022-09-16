@@ -84,6 +84,11 @@ namespace XMLComparer
 
                 FileDiffer differ = new FileDiffer(FileTypes.XML, firstFile.content, secondFile.content);
 
+                List<NodeDifferenceInfo> fileDifferences = differ.Differences;
+
+                // TODO: graphical representation
+                
+
                 
 
 
