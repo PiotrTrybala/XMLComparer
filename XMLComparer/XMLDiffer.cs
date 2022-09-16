@@ -35,14 +35,14 @@ namespace XMLComparer
 
             // 3. type checking nodes
 
-            List<NodeType> firstCheckedTypes = DoTypeChecking(firstDocument);
-            List<NodeType> secondCheckedTypes = DoTypeChecking(secondDocument);
+            List<XMLValue> firstCheckedTypes = DoTypeChecking(firstDocument);
+            List<XMLValue> secondCheckedTypes = DoTypeChecking(secondDocument);
 
             List<NodeDifferenceInfo> infos = new List<NodeDifferenceInfo>();
 
-            HashSet<string> uniqueNodes = new HashSet<string>();
             // 1. check DIFFERENT_NODE
 
+            // TODO: move operation (A - B) union (B - A) to separate function
             HashSet<string> firstKeys = new HashSet<string>(firstNodeCount.Keys.ToHashSet());
             HashSet<string> secondKeys = new HashSet<string>(secondNodeCount.Keys.ToHashSet());
 
@@ -61,8 +61,8 @@ namespace XMLComparer
             {
                 NodeDifferenceInfo info = new NodeDifferenceInfo();
                 info.differenceType = NodeDifferenceType.DIFFERENT_NODE;
-                info.firstNodeName = key;
-                info.secondNodeName = "BLANK";
+                info.nodeName = key;
+                info.nodeValue = "BLANK"; // TODO: get value inside node
                 infos.Add(info);
             }
 
@@ -80,8 +80,8 @@ namespace XMLComparer
                     {
                         NodeDifferenceInfo info = new NodeDifferenceInfo();
                         info.differenceType = NodeDifferenceType.DIFFERENT_COUNT;
-                        info.firstNodeName = key;
-                        info.secondNodeName = key;
+                        info.firstName = key;
+                        info.secondName = key;
                         infos.Add(info);
                     }
                 } catch (KeyNotFoundException) { }
@@ -98,8 +98,9 @@ namespace XMLComparer
                 {
                     NodeDifferenceInfo info = new NodeDifferenceInfo();
                     info.differenceType = NodeDifferenceType.DIFFERENT_VALUE;
-                    info.firstNodeName = firstCheckedTypes[i].name;
-                    info.secondNodeName = secondCheckedTypes[i].name;
+
+                    info.firstValue = firstCheckedTypes[i];
+                    info.secondValue = secondCheckedTypes[i];
                     infos.Add(info);
                 }
             }
@@ -108,36 +109,34 @@ namespace XMLComparer
 
         }
 
-        private List<NodeType> DoTypeChecking(XmlDocument firstDocument)
+        private List<XMLValue> DoTypeChecking(XmlDocument firstDocument)
         {
             XmlNodeList nodetoTypeCheck = firstDocument.SelectNodes("//*");
 
-            List<NodeType> nodeTypes = new List<NodeType>();
+            List<XMLValue> XMLValues = new List<XMLValue>();
 
             foreach (XmlNode node in nodetoTypeCheck)
             {
                 string nodeContent = node.InnerText;
-                NodeType nodeType = new NodeType();
-                double dOut;
-                bool bOut;
+                XMLValue value = new XMLValue();
 
-                if (Double.TryParse(nodeContent, out dOut))
+                if (Double.TryParse(nodeContent, out double dOut))
                 {
-                    nodeType.type = XMLNodeType.NUMBER;
+                    value.type = XMLNodeType.NUMBER;
                 }
-                else if (Boolean.TryParse(nodeContent, out bOut))
+                else if (Boolean.TryParse(nodeContent, out bool bOut))
                 {
-                    nodeType.type = XMLNodeType.BOOL;
+                    value.type = XMLNodeType.BOOL;
                 }
                 else
                 {
-                    nodeType.type = XMLNodeType.STRING;
+                    value.type = XMLNodeType.STRING;
                 }
-                nodeType.name = node.Name;
-                nodeTypes.Add(nodeType);
+                value.value = node.Name;
+                XMLValues.Add(value);
             }
 
-            return nodeTypes;
+            return XMLValues;
         }
 
         private Dictionary<string, int> CountNodes(XmlDocument firstDocument)

@@ -31,12 +31,34 @@ namespace XMLComparer
 
             foreach (NodeDifferenceInfo info in differences)
             {
-                Debug.WriteLine("{0} -> {1} {2}"
-                    ,info.differenceType.ToString()
-                    ,info.firstNodeName
-                    , info.secondNodeName);
-            }
 
+                switch (info.differenceType)
+                {
+                    case NodeDifferenceType.DIFFERENT_NODE:
+                        Debug.Print("{0} -> {1} {2}",
+                            NodeDifferenceType.DIFFERENT_NODE.ToString(),
+                            info.nodeName,
+                            info.nodeValue
+                            );
+                        break;
+                    case NodeDifferenceType.DIFFERENT_COUNT:
+                        Debug.Print("{0} -> {1} {2}",
+                            NodeDifferenceType.DIFFERENT_COUNT.ToString(),
+                            info.firstName,
+                            info.secondName
+                            );
+                        break;
+                    case NodeDifferenceType.DIFFERENT_VALUE:
+                        Debug.Print("{0} -> {1} {2} | {3} {4}",
+                            NodeDifferenceType.DIFFERENT_VALUE.ToString(),
+                            info.firstValue.type.ToString(), info.firstValue.value,
+                            info.secondValue.type.ToString(), info.secondValue.value
+                            );
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
     }
 }
